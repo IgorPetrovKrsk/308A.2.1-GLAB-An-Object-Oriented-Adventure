@@ -118,3 +118,29 @@ robin2.inventory = ["sword", "potion", "artifact"];
 robin.companion = leo;
 
 
+//Part 5: Gather your Party
+console.log(`------------------//Part 5: Gather your Party---------------------------`);
+
+class AdventurerFactory {  
+  constructor (role) {
+    this.role = role;
+    this.adventurers = [];
+  }
+  generate (name) {
+    const newAdventurer = new Adventurer(name, this.role);
+    this.adventurers.push(newAdventurer);
+  }
+  findByIndex (index) {
+    return this.adventurers[index];
+  }
+  findByName (name) {
+    return this.adventurers.find((a) => a.name === name);
+  }
+}
+
+const healers = new AdventurerFactory("Healer");
+healers.generate("Robin");
+console.log(healers.findByName(`Robin`));
+
+//Part 6: Developing Skills
+console.log(`------------------//Part 6: Developing Skills---------------------------`);
