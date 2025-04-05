@@ -5,28 +5,29 @@
 //     }
 
 function roll(mod = 0) {
-    const result = Math.floor(Math.random() * 20) + 1 + mod;
-    console.log(`${this.name} rolled a ${result}.`)
+  const result = Math.floor(Math.random() * 20) + 1 + mod;
+  console.log(`${this.name} rolled a ${result}.`);
+return result;  
 }
 
 const adventurer = {
-    name: "Robin",
-    health: 10,
-    inventory: ["sword", "potion", "artifact"],
-    companion: {
-        name: "Leo",
-        type: "Cat"
-    }
+  name: "Robin",
+  health: 10,
+  inventory: ["sword", "potion", "artifact"],
+  companion: {
+    name: "Leo",
+    type: "Cat"
+  }
 }
 
 adventurer.inventory.forEach(it => {
-    console.log(`${it}`);
+  console.log(`${it}`);
 })
 
 const companion2 = {
-    name: `Frank`,
-    type: `Flea`,
-    inventory: [`a small hat`, `sunglasses`]
+  name: `Frank`,
+  type: `Flea`,
+  inventory: [`a small hat`, `sunglasses`]
 }
 adventurer.companion.companion = companion2;
 console.log(adventurer);
@@ -37,16 +38,17 @@ adventurer.roll();
 
 //Part 2: Class Fantasy
 class Character {
-    constructor(name) {
-        this.name = name;
-        this.health = 100;
-        this.inventory = [];
-    }
-    static MAX_HEALTH = 100; //Part 4
-    roll(mod = 0) {
-        const result = Math.floor(Math.random() * 20) + 1 + mod;
-        console.log(`${this.name} rolled a ${result}.`)
-    }
+  constructor(name) {
+    this.name = name;
+    this.health = 100;
+    this.inventory = [];
+  }
+  static MAX_HEALTH = 100; //Part 4
+  roll(mod = 0) {
+    const result = Math.floor(Math.random() * 20) + 1 + mod;
+    console.log(`${this.name} rolled a ${result}.`);
+    return result;
+  }
 }
 
 const robin = new Character("Robin");
@@ -66,36 +68,36 @@ console.log(`------------------//Part 3: Class Features-------------------------
 
 
 class Adventurer extends Character {
-    static ROLES = [`Fighter`,`Healer`,`Wizard`];//part 4
-    constructor(name, role) {
-        super(name);
-        // Adventurers have specialized roles.
-        this.role = role;
-        if (!Adventurer.ROLES.includes(role)) throw new Error(`Unknown role ${role}`);
-        // Every adventurer starts with a bed and 50 gold coins.
-        this.inventory.push("bedroll", "50 gold coins");
-    }
-    // Adventurers have the ability to scout ahead of them.
-    scout() {
-        console.log(`${this.name} is scouting ahead...`);
-        super.roll();
-    }
+  static ROLES = [`Fighter`, `Healer`, `Wizard`];//part 4
+  constructor(name, role) {
+    super(name);
+    // Adventurers have specialized roles.
+    this.role = role;
+    if (!Adventurer.ROLES.includes(role)) throw new Error(`Unknown role ${role}`);
+    // Every adventurer starts with a bed and 50 gold coins.
+    this.inventory.push("bedroll", "50 gold coins");
+  }
+  // Adventurers have the ability to scout ahead of them.
+  scout() {
+    console.log(`${this.name} is scouting ahead...`);
+    super.roll();
+  }
 }
 
-class Companion extends Character{
-    constructor (name, type, buff){
-        super(name);
-        this.type = type;
-        this.buff = buff;
-    }
-    beUseful() {
-        console.log(`${this.name} is being useful...`);
-        super.roll();
-    }    
+class Companion extends Character {
+  constructor(name, type, buff) {
+    super(name);
+    this.type = type;
+    this.buff = buff;
+  }
+  beUseful() {
+    console.log(`${this.name} is being useful...`);
+    super.roll();
+  }
 }
 
-function catBuff(){
-    console.log (`Cat buffing`);
+function catBuff() {
+  console.log(`Cat buffing`);
 }
 
 let leo = new Companion(`Leo`, `Cat`, catBuff);
@@ -109,12 +111,66 @@ leo.buff();
 console.log(`------------------//Part 4: Class Uniforms---------------------------`);
 
 try {
-  const robin2 = new Adventurer(`Robin`,`bard`); //expecting an error
+  const robin2 = new Adventurer(`Robin`, `bard`); //expecting an error
 } catch (er) {
   console.error(er.message);
-} 
-const robin2 = new Adventurer(`Robin`,`Wizard`);
+}
+const robin2 = new Adventurer(`Robin`, `Wizard`);
 robin2.inventory = ["sword", "potion", "artifact"];
 robin.companion = leo;
 
 
+//Part 5: Gather your Party
+console.log(`------------------//Part 5: Gather your Party---------------------------`);
+
+class AdventurerFactory {
+  constructor(role) {
+    this.role = role;
+    this.adventurers = [];
+  }
+  generate(name) {
+    const newAdventurer = new Adventurer(name, this.role);
+    this.adventurers.push(newAdventurer);
+  }
+  findByIndex(index) {
+    return this.adventurers[index];
+  }
+  findByName(name) {
+    return this.adventurers.find((a) => a.name === name);
+  }
+}
+
+const healers = new AdventurerFactory("Healer");
+healers.generate("Healer");
+console.log(healers.findByName(`Healer`));
+
+//Part 6: Developing Skills
+console.log(`------------------//Part 6: Developing Skills---------------------------`);
+
+
+function duel(adventurer) {
+  let ad1Roll = this.roll(1);
+  let ad2Roll = adventurer.roll(-1);
+  let ad1Success = 0;
+  let ad2Success = 0;
+  while (this.health > 50 && adventurer.health > 50) {
+    if (ad1Roll > ad2Roll) {
+      ad1Success++;
+      adventurer.health -= 1;
+    } else if (ad2Roll > ad1Roll) {
+      ad2Success++;
+      this.health -= 1;
+    } else {
+      ad1Success++;
+      ad2Success++;
+      adventurer.health--;
+      this.health--;
+    }
+    ad1Roll = this.roll(1);
+    ad2Roll = adventurer.roll(-1);    
+  }
+  console.log(`duel ended ${this.name} made ${ad1Success} hits and has ${this.health} health and ${adventurer.name} made ${ad2Success} hits and has ${adventurer.health} health`);
+}
+
+Adventurer.prototype.duel = duel; //assigning function to class
+robin2.duel(healers.findByName(`Healer`)); //lets fight the healer
