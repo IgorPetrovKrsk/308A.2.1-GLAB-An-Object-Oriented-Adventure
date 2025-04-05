@@ -71,7 +71,7 @@ class Adventurer extends Character {
         super(name);
         // Adventurers have specialized roles.
         this.role = role;
-        if (!ROLES.includes(role)) return;
+        if (!Adventurer.ROLES.includes(role)) throw new Error(`Unknown role ${role}`);
         // Every adventurer starts with a bed and 50 gold coins.
         this.inventory.push("bedroll", "50 gold coins");
     }
@@ -108,94 +108,13 @@ leo.buff();
 //Part 4: Class Uniforms
 console.log(`------------------//Part 4: Class Uniforms---------------------------`);
 
-const robin2 = new Adventurer("Robin",`bard`);
+try {
+  const robin2 = new Adventurer(`Robin`,`bard`); //expecting an error
+} catch (er) {
+  console.error(er.message);
+} 
+const robin2 = new Adventurer(`Robin`,`Wizard`);
 robin2.inventory = ["sword", "potion", "artifact"];
 robin.companion = leo;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-class Learner {
-    #grades;
-    #name = {
-      first: "",
-      last: ""
-    };
-    #age;
-  
-    constructor(firstName, lastName, age) {
-      this.#name.first = firstName;
-      this.#name.last = lastName;
-      this.#age = age;
-  
-      this.#grades = new Grades();
-    }
-    get name() {
-      return this.#name.first + " " + this.#name.last;
-    }
-    get age() {
-      return this.#age;
-    }
-    addGrades(...grades) {
-      this.#grades.addGrades(grades);
-    }
-    get grades() {
-      return this.#grades.grades;
-    }
-    get average() {
-      return this.#grades.average;
-    }
-  }
-  
-  class Grades {
-    #grades = [];
-  
-    constructor(initialGrades) {
-      if (initialGrades) {
-        this.addGrades(initialGrades);
-      }
-    }
-    static getAverage(...grades) {
-      const arr = [];
-      this.addToArray(arr, grades);
-      return this.avgArray(arr);
-    }
-    static addToArray(arr, grades) {
-      grades = grades.flat();
-      grades.forEach((grade) => {
-        grade = Number(grade);
-  
-        if (grade >= 0 && grade <= 100) {
-          arr.push(grade);
-        }
-      });
-    }
-    static avgArray(gradeArray) {
-      const arr = [...gradeArray];
-      arr.sort((a, b) => a - b).shift();
-  
-      return arr.reduce((a, b) => a + b) / arr.length;
-    }
-    addGrades(...grades) {
-      Grades.addToArray(this.#grades, grades.flat());
-    }
-    get grades() {
-      return this.#grades;
-    }
-    get average() {
-      return Grades.avgArray(this.#grades);
-    }
-  }
